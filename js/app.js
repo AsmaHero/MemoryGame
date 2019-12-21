@@ -8,6 +8,7 @@
   let starsul = document.getElementById("starsul");//list of stars
   let resetB = document.getElementById("resetGame");//restart button
   let movesCounter = 0;
+  var bool;
   function initializeAndrandomizeCards() {
     //to random all elements of array and store it in cardlistArray
     cardlistArray = shuffle(cardlistArray);
@@ -45,6 +46,7 @@
 //this method will return new innerhtml for deckul
   function starsRating() {
     if (matchedCards.length >= 0 && matchedCards.length <= 4) {
+      bool = false;
       starsul.innerHTML = "";
       //this will loop 2 times to create another innerhtml for deckul
       for (var i = 0; i <= 2; i++) {
@@ -112,64 +114,86 @@
   let cards = document.querySelectorAll('.card');
   let opensCards = []; //this as temporary array for two cards to compare
   let matchedCards = []; //this array to store only matched cards
+  let unmatchedCrds = [];
   var secondCardClicked = null; // store the value of secondCardClicked temporary as null before begin
+  let counter = 0;
   /*
    * add the event listener for each to all cards. If a card is clicked:
    */
   cards.forEach(function(cardind) {
     cardind.addEventListener('click', function(e) {
+
       //to say is not opened before or shown before
-      if (!cardind.classList.contains("open") && !cardind.classList.contains("show")) {
+      if (!cardind.classList.contains("open") && !cardind.classList.contains("show") ) {
         movesCounter = movesCounter + 1;
-        cardind.classList.add("open");
-        cardind.classList.add("show");
-        opensCards.push(cardind.innerHTML); //add its li  to the list of opens cards
+        counter = counter + 1;
+
+
         displayMovesCounter();//to display the moves in realtime
         starsRating();//to display the rating in realtime
 
         console.log("cluc");
+if (counter === 1){
+  cardind.classList.add("open", "show");
 
-        if (secondCardClicked) {
-          console.log(secondCardClicked, cardind);
-  //now check if the open cards is matched or not, only if the opencards has two items
-          compareTwoCards(cardind);
-        } else {
+      opensCards.push(cardind); //add its li  to the list of opens cards
+}
+        if (counter === 2) {
           secondCardClicked = cardind;
+
+secondCardClicked.classList.add("open", "show");
+  opensCards.push(secondCardClicked);
+          //  setTimeout(() => secondCardClicked.classList.add("open", "show"), 400);
+
+  //now check if the open cards is matched or not, only if the opencards has two items
+          compareTwoCards();
+
+        }
+        if (counter > 2){
+            opensCards = [];
+          return;
+
         }
       }
+
     });
+
   });
 
-  function compareTwoCards(cardind) {
-    if (opensCards.length === 2) {
+  function compareTwoCards() {
+console.log("it is comparing hi");
 
-      if (opensCards[0] === opensCards[1]) {
-        cardind.classList.add("match");
-        secondCardClicked.classList.add("match");
+    if (opensCards.length === 2) {
+counter = 0;
+console.log(opensCards);
+      if (opensCards[0].innerHTML === opensCards[1].innerHTML) {
+        opensCards[0].classList.add("match");
+        opensCards[1].classList.add("open", "show","match");
         console.log("matched");
-        opensCards = [];
-        matchedCards.push(cardind, secondCardClicked);
-        secondCardClicked = null;
-        displayMovesCounter();
+        matchedCards.push(opensCards[0], opensCards[1]);
+            opensCards = [];
         starsRating();
         if (matchedCards.length === 16) {
           CongraluationPopUp();
         }
 
       } else {
-        cardind.classList.remove("match");
-        secondCardClicked.classList.remove("match");
+unmatchedCrds = opensCards;
+opensCards = [];
+         unmatchedCrds[0].classList.remove("match");
+        unmatchedCrds[1].classList.remove("match");
         // hide it after 10000 milliseconds
-        setTimeout(() => cardind.classList.remove("open", "show"), 400);
-        setTimeout(() => secondCardClicked.classList.remove("open", "show"), 400);
-        setTimeout(() => secondCardClicked = null, 400);
+
+        setTimeout(() => unmatchedCrds[0].classList.remove("open", "show"), 400);
+        setTimeout(() => unmatchedCrds[1].classList.remove("open", "show"), 400);
         starsRating();
-        opensCards = [];
+
         console.log("not matched");
         console.log(movesCounter);
       }
 
     }
+
   }
 
 ////function at the end of game
@@ -180,13 +204,13 @@
     var span = document.getElementsByClassName("close")[0];
     var movesCounterN = document.querySelector('.moves').innerHTML;
     var finalCalculatedTime = timer.innerHTML;
-    starsRating();//to display starsRating
     clearInterval(interval); //clear the interval to beginning
     //showing move, rating, time on modal
     document.getElementById("finalMove").innerHTML = movesCounterN;
     document.getElementById("totalTime").innerHTML = finalCalculatedTime;
+    document.getElementById("starsulm").innerHTML =   starsRating().innerHTML;
     // When the user clicks on the button,  open congratulations modal
-    modal.style.display = "block";
+    modal.style.display = "inline-block";
     // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
       modal.style.display = "none";
@@ -199,6 +223,7 @@
     }
 
   }
+
   /*
    *  - display the card's symbol (put this functionality in another function that you call from this one)
    *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)

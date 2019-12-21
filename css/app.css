@@ -95,7 +95,8 @@
   /* Modal Content/Box */
   .modal-content {
     text-align: center;
-    display: block;
+    display: inline-block;
+    text-align: center;
     max-width: 50%%;
     background-color: #fefefe;
     margin: 15%;
@@ -103,7 +104,7 @@
     padding: 20px;
     width: 50%;
     /* Could be more or less, depending on screen size */
-    height: 20%;
+    height: 50%;
   }
 
   /* The Close Button */
@@ -174,9 +175,7 @@
   /*
    * Styles for the Score Panel
    */
-  .modaltext {
-    margin-left: 20%;
-  }
+
 
   .score-panel {
     text-align: left;
