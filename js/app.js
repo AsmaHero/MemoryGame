@@ -106,7 +106,7 @@
    * All functions needed to start when the page is loaded and game is start
    */
     initializeAndrandomizeCards();
-    startGameTimer();
+    
 
   /*
    * All needed variables for responsiding to clicks and other events to respond.
@@ -117,12 +117,16 @@
   let unmatchedCrds = [];
   var secondCardClicked = null; // store the value of secondCardClicked temporary as null before begin
   let counter = 0;
+let isGameStart = true;
   /*
    * add the event listener for each to all cards. If a card is clicked:
    */
   cards.forEach(function(cardind) {
     cardind.addEventListener('click', function(e) {
-
+if (isGameStart){
+  startGameTimer();
+  isGameStart = false;
+}
       //to say is not opened before or shown before
       if (!cardind.classList.contains("open") && !cardind.classList.contains("show") ) {
         movesCounter = movesCounter + 1;
